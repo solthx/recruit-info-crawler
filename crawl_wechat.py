@@ -1,4 +1,6 @@
-# This is a Python script.
+'''
+    爬取预设公众号
+'''
 import json
 import random
 import time
@@ -58,8 +60,8 @@ def key_word_checker(html_text):
 
 '''
     互联网公司的岗位checker
-    规则：${公司名}(任意0~20个字符)实习 
-    @return list[...] , 元素:命中的公司实习，例如：（腾讯）2024年用户研究（实习）
+    规则：${公司名}(任意字符)${岗位名}(任意字符)实习 
+    @return list[...] , 元素:命中的公司实习，例如：腾讯2024年用户研究实习
 '''
 offset = 20
 def dot_company_checker(html_text):
@@ -82,7 +84,7 @@ def dot_company_checker(html_text):
                             res.append(parse_info)
                             break
                 pos += 1
-    return  list(set(res))
+    return list(set(res))
 
 
 checkers = [key_word_checker, dot_company_checker]
@@ -165,7 +167,7 @@ def run(config_file, accounts_json_file):
         result_list = do_process(recent_data)
         res.extend(result_list)
         print(">>>>>>> 分析完毕，开始写入文件...")
-        with open('data.csv', 'a', encoding='utf-8') as f:
+        with open('data-wechat.csv', 'a', encoding='utf-8') as f:
             for e in result_list:
                 f.writelines(str(e[0]) + "," + str(e[1]) + "," + e[2] + "," + e[3] + "," + e[4] + "\n")
 
@@ -190,15 +192,15 @@ def run(config_file, accounts_json_file):
 
 
 if __name__ == '__main__':
-    result_list, state = run("./config/wechat.yaml", "./config/accounts.json")
-    with open("./data.csv", encoding='utf-8') as f:
+    result_list, state = run("config/wechat/wechat.yaml", "config/wechat/accounts.json")
+    with open("./data-wechat.csv", encoding='utf-8') as f:
         contents = []
         readlines = f.readlines()  # readlines是一个列表
         for i in readlines:
             line = i.strip().split(",")  # 去掉前后的换行符，之后按逗号分割开
             contents.append(line)  # contents二维列表
     df = pd.DataFrame(contents)
-    df.to_csv('输出结果.csv', header=False, encoding='utf_8_sig')           # 不添加表头
+    df.to_csv('输出结果-wechat.csv', header=False, encoding='utf_8_sig')           # 不添加表头
     # df.columns = ["Source", "Target", "Type", "Path"]  # 添加表头
     # df.to_csv("test.csv", index=False)
     print("数据写入成功")

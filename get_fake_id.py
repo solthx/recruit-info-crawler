@@ -1,3 +1,7 @@
+'''
+    根据公众号名称获取fake_id，并打印
+'''
+
 import requests
 import requests as req
 import yaml
