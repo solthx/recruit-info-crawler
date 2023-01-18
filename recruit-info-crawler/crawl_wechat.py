@@ -192,7 +192,8 @@ def run(config_file, accounts_json_file):
 
 
 if __name__ == '__main__':
-    result_list, state = run("config/wechat/wechat.yaml", "config/wechat/accounts.json")
+    result_list, state = run("config/wechat/wechat.yaml",
+                             "recruit-info-crawler/config/wechat/accounts.json")
     with open("./data-wechat.csv", encoding='utf-8') as f:
         contents = []
         readlines = f.readlines()  # readlines是一个列表

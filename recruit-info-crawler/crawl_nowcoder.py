@@ -83,7 +83,8 @@ def run(config_file, accounts_json_file):
     return [], 0
 
 if __name__ == '__main__':
-    result, state = run('config/nowcoder/nowcoder.yaml', 'config/nowcoder/accounts.json')
+    result, state = run('config/nowcoder/nowcoder.yaml',
+                        'recruit-info-crawler/config/nowcoder/accounts.json')
     with open("./data-nowcoder.csv", encoding='utf-8') as f:
         contents = []
         readlines = f.readlines()  # readlines是一个列表
