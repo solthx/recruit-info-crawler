@@ -40,10 +40,10 @@ def run(config_file, accounts_json_file):
                 'requestFrom':'1',
                 'page':cur_page,
                 'pageSize':'20',
-                'recruitType':'2',
+                'recruitType':'2', # 表示运营
                 'jobCity':'北京',
                 'careerJobId': accounts[account_name],
-                'internDayList':'1',   # 1表示出勤1～3天，2表示4～5天
+                # 'internDayList':'2',   # 1表示出勤1～3天，2表示4～5天
                 'visitorId':'b8a571ac - 6e7f - 414b - 9da8 - b575c80d673b'
             }
             url = "https://www.nowcoder.com/np-api/u/job/search?_=1673970012958"
@@ -59,19 +59,21 @@ def run(config_file, accounts_json_file):
             for data in data_list:
                 jd_id = data['id']
                 job_name = data['jobName']
-                update_time = data['updateTime']
-                # print(update_time)
+                create_time = data['createTime']
+                avgProcessRate = data['avgProcessRate'] # 反馈率
+                avgProcessSec = data['avgProcessSec'] # 平均反馈时长（秒）
+                # print(create_name)
                 job_keys = data['jobKeys']
                 company_name = data['user']['identity'][0]['companyName']
                 page_url = "https://www.nowcoder.com/jobs/intern/detail?jobId={}".format(jd_id)
-                if jd_id not in jobset and time_check(update_time, config['recent_day']):
+                if jd_id not in jobset and time_check(create_time/1000, config['recent_day']):
                     jobset.add(jd_id)
-                    tmp_list.append((time.strftime("%Y-%m-%d", time.localtime(update_time/1000)), '牛客', '[{} - {}]'.format(company_name, job_name), str.replace(job_keys, ","," && "), str(page_url)))
+                    tmp_list.append((time.strftime("%Y-%m-%d", time.localtime(create_time/1000)), str(avgProcessRate)+'%', avgProcessSec, '[{} - {}]'.format(company_name, job_name), str.replace(job_keys, ","," && "), str(page_url)))
             # print(tmp_list)
-            time.sleep(random.randint(7,14))
+            time.sleep(random.randint(1,2))
             with open('data-nowcoder.csv', 'a', encoding='utf-8') as f:
-                for e in res:
-                    f.writelines(str(e[0]) + "," + str(e[1]) + "," + e[2] + "," + e[3] + "," + e[4] + "\n")
+                for e in tmp_list:
+                    f.writelines(str(e[0]) + "," + str(e[1]) + "," + str(e[2]) + "," + str(e[3]) + "," + str(e[4]) + "," + str(e[5]) + "\n")
             res.extend(tmp_list)
     # 更新jobid
     pd.DataFrame(data=list(jobset), columns=['id']).to_csv("config/nowcoder/dump/dump-{}.csv".format(time.strftime("%Y-%m-%d",time.localtime(time.time()))))
@@ -83,8 +85,8 @@ def run(config_file, accounts_json_file):
     return [], 0
 
 if __name__ == '__main__':
-    result, state = run('config/nowcoder/nowcoder.yaml',
-                        'recruit-info-crawler/config/nowcoder/accounts.json')
+    result, state = run('./config/nowcoder/nowcoder.yaml',
+                        './config/nowcoder/accounts.json')
     with open("./data-nowcoder.csv", encoding='utf-8') as f:
         contents = []
         readlines = f.readlines()  # readlines是一个列表

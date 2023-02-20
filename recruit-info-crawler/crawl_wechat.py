@@ -54,7 +54,7 @@ def meta_data_filter(resp, cnt, account_name):
 def key_word_checker(html_text):
     res = []
     for e in key_word:
-        if e in html_text:
+        if '招聘' in key_word and e in html_text:
             res.append(e)
     return res
 
@@ -173,7 +173,7 @@ def run(config_file, accounts_json_file):
 
         # print(result_list)
         print(">>>>>>> 处理完毕，开始睡眠...")
-        time.sleep(random.randint(7,14))
+        time.sleep(random.randint(15,25))
         print(">>>>>>> 睡眠结束")
     return (res, 0)
 
@@ -192,8 +192,8 @@ def run(config_file, accounts_json_file):
 
 
 if __name__ == '__main__':
-    result_list, state = run("config/wechat/wechat.yaml",
-                             "recruit-info-crawler/config/wechat/accounts.json")
+    result_list, state = run("./config/wechat/wechat.yaml",
+                             "./config/wechat/accounts.json")
     with open("./data-wechat.csv", encoding='utf-8') as f:
         contents = []
         readlines = f.readlines()  # readlines是一个列表
